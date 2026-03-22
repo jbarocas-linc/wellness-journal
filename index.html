@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0a84ff" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Journal" />
+    <title>Wellness Journal</title>
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="title-block">
+          <p class="eyebrow">Wellness Journal</p>
+          <h1 id="screen-title">Text Input</h1>
+          <p id="runtime-status" class="runtime-status">Static preview</p>
+        </div>
+        <div class="topbar-actions">
+          <button
+            id="open-summary-button"
+            class="icon-button"
+            type="button"
+            aria-label="Open summary and review"
+          >
+            Review
+          </button>
+        </div>
+      </header>
+
+      <nav class="screen-dots" aria-label="Screen navigation">
+        <button class="screen-dot is-active" data-screen-target="0" type="button">
+          Text
+        </button>
+        <button class="screen-dot" data-screen-target="1" type="button">Buttons</button>
+        <button class="screen-dot" data-screen-target="2" type="button">Mood</button>
+      </nav>
+
+      <main id="screen-container" class="screen-container" aria-live="polite">
+        <section class="screen is-active" data-screen="0" aria-label="Text input">
+          <div class="panel primary-panel">
+            <label class="field-label" for="text-entry-input">How's your day going?</label>
+            <textarea
+              id="text-entry-input"
+              class="journal-input"
+              rows="6"
+              placeholder="How's your day going?"
+            ></textarea>
+            <div class="input-actions">
+              <button id="text-mic-button" class="secondary-button" type="button">
+                Mic
+              </button>
+              <button id="text-submit-button" class="primary-button" type="button">
+                Submit
+              </button>
+            </div>
+            <p class="helper-text">
+              Natural language works here. Activities, feelings, and context are stored together.
+            </p>
+          </div>
+        </section>
+
+        <section class="screen" data-screen="1" aria-label="Activity buttons">
+          <div class="panel stacked-panel">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">Activity Buttons</p>
+                <h2>Tap to add, press and hold to subtract</h2>
+              </div>
+              <button
+                id="open-settings-button"
+                class="icon-button"
+                type="button"
+                aria-label="Open button settings"
+              >
+                Gear
+              </button>
+            </div>
+            <label class="field-label" for="activity-context-input">Context</label>
+            <textarea
+              id="activity-context-input"
+              class="journal-input compact"
+              rows="3"
+              placeholder="Add context if you want"
+            ></textarea>
+            <div id="activity-grid" class="activity-grid" aria-live="polite"></div>
+            <button id="activity-submit-button" class="primary-button" type="button">
+              Submit
+            </button>
+          </div>
+        </section>
+
+        <section class="screen" data-screen="2" aria-label="Mood meter">
+          <div class="panel stacked-panel">
+            <div class="panel-header mood-header">
+              <div>
+                <p class="eyebrow">Mood Meter</p>
+                <h2>Word select or precision placement</h2>
+              </div>
+              <label class="mode-toggle">
+                <span>Word Select</span>
+                <input id="mood-mode-toggle" type="checkbox" aria-label="Toggle precision placement" />
+                <span>Precision</span>
+              </label>
+            </div>
+            <div class="mood-axis-labels">
+              <span>High Energy</span>
+              <span>High Pleasantness</span>
+            </div>
+            <div class="mood-grid-wrap">
+              <div id="mood-grid" class="mood-grid" role="grid" aria-label="Mood meter grid"></div>
+              <div id="mood-precision-overlay" class="mood-precision-overlay" aria-hidden="true">
+                <div id="mood-dot" class="mood-dot" hidden></div>
+                <div id="nearest-word-label" class="nearest-word-label" hidden></div>
+              </div>
+            </div>
+            <div class="mood-footer-labels">
+              <span>Low Pleasantness</span>
+              <span>Low Energy</span>
+            </div>
+            <label class="field-label" for="mood-context-input">Context</label>
+            <textarea
+              id="mood-context-input"
+              class="journal-input compact"
+              rows="3"
+              placeholder="Add any context or extra feeling words"
+            ></textarea>
+            <div class="input-actions">
+              <button id="mood-mic-button" class="secondary-button" type="button">Mic</button>
+              <button id="mood-submit-button" class="primary-button" type="button">Submit</button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <section id="summary-panel" class="summary-panel" aria-hidden="true">
+      <div class="summary-handle" aria-hidden="true"></div>
+      <div class="summary-header">
+        <div>
+          <p class="eyebrow">Summary / Review</p>
+          <h2>Patterns, timeline, and charts</h2>
+        </div>
+        <button id="close-summary-button" class="icon-button" type="button" aria-label="Close summary">
+          Close
+        </button>
+      </div>
+
+      <div class="question-bar">
+        <input
+          id="question-input"
+          type="text"
+          class="question-input"
+          placeholder="Ask about patterns..."
+          aria-label="Ask about patterns"
+        />
+        <button id="question-mic-button" class="secondary-button" type="button">Mic</button>
+        <button id="question-submit-button" class="primary-button" type="button">Ask</button>
+      </div>
+
+      <nav class="summary-tabs" aria-label="Summary tabs">
+        <button class="summary-tab is-active" data-tab="timeline" type="button">Timeline</button>
+        <button class="summary-tab" data-tab="patterns" type="button">Patterns</button>
+        <button class="summary-tab" data-tab="charts" type="button">Charts</button>
+      </nav>
+
+      <div class="summary-content">
+        <section id="timeline-tab" class="tab-panel is-active"></section>
+        <section id="patterns-tab" class="tab-panel"></section>
+        <section id="charts-tab" class="tab-panel"></section>
+      </div>
+    </section>
+
+    <section id="setup-modal" class="modal" aria-hidden="true">
+      <div class="modal-card">
+        <p class="eyebrow">Local-first setup</p>
+        <h2>Anthropic key for text parsing</h2>
+        <p class="modal-copy">
+          Data stays in this browser. The API key is stored locally on this device so Claude parsing can run when you want it.
+        </p>
+        <label class="field-label" for="api-key-input">Anthropic API key</label>
+        <input
+          id="api-key-input"
+          class="text-field"
+          type="password"
+          placeholder="sk-ant-..."
+          autocomplete="off"
+        />
+        <div class="modal-actions">
+          <button id="save-api-key-button" class="primary-button" type="button">Save key</button>
+          <button id="skip-api-key-button" class="secondary-button" type="button">
+            Continue without API
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="settings-modal" class="modal" aria-hidden="true">
+      <div class="modal-card large">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Settings</p>
+            <h2>Buttons, data, and API</h2>
+          </div>
+          <button id="close-settings-button" class="icon-button" type="button">Close</button>
+        </div>
+
+        <div class="settings-section">
+          <label class="field-label" for="settings-api-key-input">Anthropic API key</label>
+          <input
+            id="settings-api-key-input"
+            class="text-field"
+            type="password"
+            placeholder="sk-ant-..."
+            autocomplete="off"
+          />
+          <button id="update-api-key-button" class="secondary-button" type="button">Update key</button>
+        </div>
+
+        <div class="settings-section">
+          <div class="panel-header compact">
+            <div>
+              <p class="eyebrow">Buttons</p>
+              <h3>Manage visible buttons</h3>
+            </div>
+          </div>
+          <div class="custom-button-row">
+            <input id="custom-button-name" class="text-field" type="text" placeholder="Add custom button" />
+            <select id="custom-button-type" class="text-field" aria-label="Custom button type">
+              <option value="multi-tap">Multi-tap</option>
+              <option value="single-tap">Single-tap</option>
+            </select>
+            <button id="add-custom-button-button" class="primary-button" type="button">Add</button>
+          </div>
+          <div id="button-list" class="button-list"></div>
+        </div>
+
+        <div class="settings-section">
+          <div class="panel-header compact">
+            <div>
+              <p class="eyebrow">Data</p>
+              <h3>Import and export</h3>
+            </div>
+          </div>
+          <div class="settings-actions">
+            <button id="export-data-button" class="secondary-button" type="button">Export data</button>
+            <button id="import-data-button" class="secondary-button" type="button">Import data</button>
+          </div>
+          <input id="import-data-input" type="file" accept="application/json" hidden />
+          <p class="helper-text">Exports include journal data and buttons. API keys are not included.</p>
+        </div>
+      </div>
+    </section>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
+
+    <script src="./storage.js"></script>
+    <script src="./patterns.js"></script>
+    <script src="./claude-api.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
