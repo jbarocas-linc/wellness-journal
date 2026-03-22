@@ -16,12 +16,50 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
+    <script>
+      (function () {
+        function setRuntime(statusText, variant, detailText) {
+          var statusEl = document.getElementById("runtime-status");
+          var errorEl = document.getElementById("runtime-error");
+          if (statusEl) {
+            statusEl.textContent = statusText;
+            statusEl.className = "runtime-status" + (variant ? " " + variant : "");
+          }
+          if (errorEl) {
+            if (detailText) {
+              errorEl.hidden = false;
+              errorEl.textContent = detailText;
+            } else {
+              errorEl.hidden = true;
+              errorEl.textContent = "";
+            }
+          }
+        }
+
+        window.__setRuntimeStatus = setRuntime;
+        window.addEventListener("error", function (event) {
+          var target = event && event.target;
+          if (target && target.tagName === "SCRIPT") {
+            setRuntime("Script load error", "is-error", target.src || "Unknown script");
+            return;
+          }
+          var message = event && event.message ? event.message : "Unknown script error";
+          var line = event && event.lineno ? "line " + event.lineno : "line ?";
+          setRuntime("Runtime error", "is-error", message + "\n" + line);
+        }, true);
+        window.addEventListener("unhandledrejection", function (event) {
+          var reason = event && event.reason ? String(event.reason) : "Unhandled promise rejection";
+          setRuntime("Runtime error", "is-error", reason);
+        });
+      })();
+    </script>
     <div class="app-shell">
       <header class="topbar">
         <div class="title-block">
           <p class="eyebrow">Wellness Journal</p>
           <h1 id="screen-title">Text Input</h1>
           <p id="runtime-status" class="runtime-status">Static preview</p>
+          <pre id="runtime-error" class="runtime-error" hidden></pre>
         </div>
         <div class="topbar-actions">
           <button
@@ -261,9 +299,6 @@
 
     <div id="toast" class="toast" aria-live="polite"></div>
 
-    <script src="./storage.js"></script>
-    <script src="./patterns.js"></script>
-    <script src="./claude-api.js"></script>
-    <script src="./app.js"></script>
+    <script src="./standalone.js"></script>
   </body>
 </html>
